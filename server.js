@@ -1,6 +1,6 @@
 express = require("express")
 const app = express()
-const PORT = 8080
+const PORT = process.env.PORT || 8080
 
 app.get("/", (req, res) => {
     res.json({meassage: "Welcome to ITD102 application"})

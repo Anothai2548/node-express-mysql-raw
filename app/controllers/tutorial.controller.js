@@ -1,9 +1,19 @@
+const Tutorial = require("../module/tutorial.module.js")
+
 exports.create = (req, res) => {
     res.send("Create")
 }
 
 exports.findAll = (req, res) => {
-    res.send({massage: "FindAll"});
+    const title = req.query.title
+
+    Tutorial.getAll(title, (err, data) => {
+        if(err){
+            res.status(500).send({massage: err.massage || "Some error occurred"})
+        } else { 
+            res.send(data)
+        }
+    })
 }
 
 exports.findAllPublished = (req, res) => {
