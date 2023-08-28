@@ -1,0 +1,21 @@
+{
+  "name": "express-mysql-raw",
+  "version": "1.0.0",
+  "description": "Node.js Express MySQL",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Anothai",
+  "license": "ISC",
+  "keywords": [
+    "express"
+  ],
+  "dependencies": {
+    "express": "^4.18.2",
+    "mysql2": "^3.6.0",
+    "nodemon": "^3.0.1",
+    "npm": "^9.8.1"
+  }
+}
