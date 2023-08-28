@@ -2,13 +2,22 @@ const sql = require("./db.js")
 
 const Tutorial = function(tutorial){
     
-    // this.title = tutorial.title
-    // this.description = tutorial.description
-    // this.published = tutorial.published
+    this.title = tutorial.title
+    this.description = tutorial.description
+    this.published = tutorial.published
 }
 
-Tutorial.create = () => {
+Tutorial.create = (newTutorial, result) => {
+    sql.query("INSERT INTO tutorials SET ?" , newTutorial, (err, res) => {
 
+        if(err) {
+
+            result(err, null)
+            return
+        }
+
+        result(null, {id: res.insertId, ...newTutorial})
+    })
 }
 
 Tutorial.getAll = (title, result) => {
@@ -17,18 +26,28 @@ Tutorial.getAll = (title, result) => {
     sql.query(sqltext, (err, res) => {
 
         if(err){
-            //console.log("error : ", err)
+            // console.log("error : ", err)
             result(err, null)
             return
         }
 
-        //console.log("tutorial : ", res)
+        // console.log("tutorial : ", res)
         result(null, res)
     })
 }
 
-Tutorial.findAllPublished = () => {
+Tutorial.getAllPublished = (result) => {
+    sql.query("SELECT * FROM tutorials WHERE published = FALSE", (err, res) => {
 
+        if(err) {
+
+            result(err, null)
+            return 
+
+        }
+
+        result(null, res)
+    })
 }
 
 Tutorial.findById = (id, result) => {
@@ -45,7 +64,9 @@ Tutorial.findById = (id, result) => {
             return
 
         } else {
+
             result({kind: "not_found"}, null)
+            return
         }
     })
 }
@@ -54,22 +75,21 @@ Tutorial.update = () => {
 
 }
 
-Tutorial.delete = (id, result) => {
-    sql.query("DELETE * FROM tutorials WHERE id = " + id, (err, res) => {
+Tutorial.remove = (id, result) => {
+    sql.query("DELETE FROM tutorials WHERE id = ?", id, (err, res) => {
 
         if(err) {
 
             result(err, null)
             return
 
-        } else if(res.length) {
-
-            result(null, res[0])
-            return 
-
-        } else {
+        } else if(res.affectedRows == 0) {
+            
             result({kind: "not_found"}, null)
+            return
         }
+
+        result(null, res)
     })
 }
 
@@ -81,9 +101,9 @@ Tutorial.deleteAll = (title, result) => {
             result(err, null)
             return
             
-        } else {
-            result(null, res)
         }
+
+        result(null, res)
     })
 }
 

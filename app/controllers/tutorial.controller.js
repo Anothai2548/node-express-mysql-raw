@@ -1,7 +1,26 @@
 const Tutorial = require("../module/tutorial.module.js")
 
 exports.create = (req, res) => {
-    res.send("Create")
+    if(!req.body) {
+        res.status(400).send({massage: "Centent can't be empty!"})
+    }
+
+    const tutorial = new Tutorial({
+
+        title: req.body.title,
+        description: req.body.description,
+        published: req.body.published || false
+    })
+
+    Tutorial.create(tutorial, (err, data) => {
+
+        if(err) {
+            res.status(500).send({massage: err.massage || "Somme error occureed"})
+        } else {
+            res.send(data)
+        }
+
+    })
 }
 
 exports.findAll = (req, res) => {
@@ -18,7 +37,14 @@ exports.findAll = (req, res) => {
 }
 
 exports.findAllPublished = (req, res) => {
-    res.send({massage: "FindAllPublished"})
+    Tutorial.getAllPublished((err, data) => {
+
+        if(err) {
+            res.status(500).send({massage: err.massage || "Some error occured"})
+        } else {
+            res.send(data)
+        }
+    })
 }
 
 exports.findOne = (req, res) => {
@@ -46,8 +72,19 @@ exports.update = (req, res) => {
 
 exports.delete = (req, res) => {
     const id = req.params.id
-
-    Tutorial.delete()
+    
+    Tutorial.remove(id, (err, data) => {
+        if(err) {
+            
+            if(err.kind === 'not_found') {
+                res.status(404).send({massage: 'Not found!' + id})
+            } else {
+                res.status(500).send({massage: 'Could not delet id' + id})
+            }
+        } else {
+            res.send({massage: 'Deleted successfuly'})
+        }
+    })
 }
 
 exports.deleteAll = (req, res) => {
